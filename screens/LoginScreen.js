@@ -2,9 +2,25 @@ import React, {Component} from 'react';
 import {Alert, AsyncStorage, Button, StyleSheet, TextInput, View} from 'react-native';
 
 export default class LoginScreen extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            loading: false,
+            email: '',
+            password: ''
+        }
+    }
+
+    componentWillMount() {
+        this.isAuthenticated()
+    }
+
     static navigationOptions = {
         header: null
     };
+
+    // If the user is authenticated, show main Screen
     isAuthenticated = () => {
         AsyncStorage.getItem('accessToken')
             .then((value) => {
@@ -13,6 +29,8 @@ export default class LoginScreen extends Component {
                 }
             });
     };
+
+    // To validate empty fields
     checkTextInput = () => {
         if (this.state.email === '' || this.state.password === '') {
             Alert.alert("Complete all the inputs")
@@ -20,6 +38,8 @@ export default class LoginScreen extends Component {
             this.doLogin();
         }
     };
+
+    // Do login with email and password
     doLogin = async () => {
         try {
             let response = await fetch("https://api-complaint.herokuapp.com/api/Users/login", {
@@ -34,11 +54,15 @@ export default class LoginScreen extends Component {
                 })
             });
             let responseJson = await response.json();
+
+            // Get and store the access token
             this.storeAccessToken(responseJson.id)
         } catch (error) {
             Alert.alert("Login error. Try again.");
         }
     };
+
+    // To store the Access Token with AsyncStorage and auth the user
     storeAccessToken = async (key) => {
         try {
             await AsyncStorage.setItem('accessToken', key);
@@ -49,20 +73,6 @@ export default class LoginScreen extends Component {
             // Show error dialog
         }
     };
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            loading: false,
-            email: '',
-            password: ''
-        }
-    }
-
-    componentWillMount() {
-        this.isAuthenticated()
-    }
 
     render() {
         return (
