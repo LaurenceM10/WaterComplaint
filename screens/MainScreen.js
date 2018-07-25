@@ -1,5 +1,9 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {Component} from 'react';
+import {StyleSheet} from 'react-native';
+import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
+import ComplaintsScreen from "./ComplaintsScreen";
+import ProfileScreen from "./ProfileScreen";
+import AddComplaintScreen from "./AddComplaintScreen";
 
 export default class MainScreen extends Component {
     static navigationOptions = {
@@ -9,12 +13,25 @@ export default class MainScreen extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                <Text>Main Screen</Text>
-            </View>
+            <TabStackNavigator/>
         );
     }
 }
+
+
+const TabStackNavigator = createMaterialBottomTabNavigator(
+    {
+        Home: ComplaintsScreen,
+        Contact: AddComplaintScreen,
+        Profile: ProfileScreen
+    },
+    {
+        initialRouteName: 'Home',
+        activeTintColor: '#000',
+        inactiveTintColor: '#999',
+        barStyle: {backgroundColor: '#fff'},
+    }
+);
 
 const styles = StyleSheet.create({
     container: {
