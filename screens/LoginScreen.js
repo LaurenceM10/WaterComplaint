@@ -12,11 +12,24 @@ export default class LoginScreen extends Component {
         }
     }
 
+    componentWillMount(){
+        this.isAuthenticated()
+    }
+
+    isAuthenticated = () => {
+        AsyncStorage.getItem('accessToken')
+            .then((value) => {
+                if (value !== null) {
+                    this.props.navigation.navigate('Main');
+                }
+            });
+    };
+
     static navigationOptions = {
         header: null
     };
 
-    checkTextInputText = () => {
+    checkTextInput = () => {
         if (this.state.email === '' || this.state.password === '') {
             Alert.alert("Complete all the inputs")
         } else {
@@ -25,29 +38,29 @@ export default class LoginScreen extends Component {
     };
 
     doLogin = async () => {
-        await fetch("https://api-complaint.herokuapp.com/api/Users/login", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify({
-                email: this.state.email,
-                password: this.state.password
-            })
-        })
-            .then(res => res.json())
-                .then(res => {
-                    this.storeAccessToken(res.id);
-                    Alert.alert(res.id)
+        try {
+            let response = await fetch("https://api-complaint.herokuapp.com/api/Users/login", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    email: this.state.email,
+                    password: this.state.password
                 })
-                .catch(Alert.alert("Error in login"))
+            });
+            let responseJson = await response.json();
+            this.storeAccessToken(responseJson.id)
+        } catch (error) {
+            Alert.alert("Login error. Try again.");
+        }
     };
 
     storeAccessToken = async (key) => {
         try {
             await AsyncStorage.setItem('accessToken', key);
-            if(AsyncStorage.getItem('accessToken') !== ''){
+            if (AsyncStorage.getItem('accessToken') !== null) {
                 this.props.navigation.navigate('Main');
             }
         } catch (error) {
@@ -74,7 +87,7 @@ export default class LoginScreen extends Component {
                     <View style={styles.buttonContainer}>
                         <Button
                             title={"Login"}
-                            onPress={() => this.checkTextInputText()}
+                            onPress={() => this.checkTextInput()}
                         />
                     </View>
                 </View>

@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 export default class MainScreen extends Component {
     static navigationOptions = {
         headerTitle: 'WaterComplaints',
-        headerLeft: null
+        headerLeft: null,
     };
 
     render() {
