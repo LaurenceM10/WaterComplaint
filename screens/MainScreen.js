@@ -1,11 +1,16 @@
 import React, {Component} from 'react';
 import {StyleSheet} from 'react-native';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
+import { NavigationActions } from 'react-navigation'
 import ComplaintsScreen from "./ComplaintsScreen";
 import ProfileScreen from "./ProfileScreen";
 import AddComplaintScreen from "./AddComplaintScreen";
 
 export default class MainScreen extends Component {
+    constructor(props){
+        super(props)
+    }
+
     static navigationOptions = {
         headerTitle: 'WaterComplaints',
         headerLeft: null,
@@ -17,6 +22,7 @@ export default class MainScreen extends Component {
         );
     }
 }
+
 
 
 const TabStackNavigator = createMaterialBottomTabNavigator(
