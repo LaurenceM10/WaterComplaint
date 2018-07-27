@@ -8,18 +8,17 @@ export default class LoginScreen extends Component {
         this.state = {
             loading: false,
             email: '',
-            password: ''
-        }
+            password: '',
+            accessToken: ''
+        };
+
+        this.isAuthenticated()
     }
 
 
     static navigationOptions = {
         header: null
     };
-
-    componentWillMount() {
-        this.isAuthenticated()
-    }
 
     // If the user is authenticated, show main Screen
     isAuthenticated = () => {

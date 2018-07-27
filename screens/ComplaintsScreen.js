@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Alert, AsyncStorage, FlatList, StyleSheet, Text, View} from 'react-native';
-import {List} from "react-native-elements";
+import {Alert, AsyncStorage, FlatList, ProgressBarAndroid, StyleSheet, Text, View} from 'react-native';
+import {Button, Card, List} from "react-native-elements";
 
 export default class ComplaintsScreen extends Component {
     constructor(props) {
@@ -9,7 +9,7 @@ export default class ComplaintsScreen extends Component {
         this.state = {
             loading: false,
             data: []
-        }
+        };
     }
 
     componentDidMount() {
@@ -17,51 +17,82 @@ export default class ComplaintsScreen extends Component {
     }
 
     fetchComplaints = async () => {
-        try {
-            // Update loading state
-            this.setState({loading: true});
+        // Get access token to send in header request
+        AsyncStorage.getItem('accessToken').then(value => {
+            try {
+                // Update loading state
+                this.setState({loading: true});
 
-            fetch("https://api-complaint.herokuapp.com/api/Complaints", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': 'mIZa94QSFCzAJdrKX7vK70Y6EkL0b15FN6mYYpYZ5g65ulEbVTVUebCc57C2NuHH'
-                }
-            })
-                .then(res => res.json())
-                .then(res => {
-                    this.setState({
-                        data: res,
-                        loading: false
+                fetch("https://api-complaint.herokuapp.com/api/Complaints", {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': value.toString()
+                    }
+                })
+                    .then(res => res.json())
+                    .then(res => {
+                        this.setState({
+                            data: res,
+                            loading: false
+                        });
                     });
-                });
-        } catch (error) {
-            Alert.alert("Complaints error. Try again.");
-        }
+            } catch (error) {
+                Alert.alert("Complaints error. Try again.");
+            }
+        })
     };
 
-    getAccessToken = () => AsyncStorage.getItem('accessToken');
+    getAccessToken = async () => {
+        await AsyncStorage.getItem('accessToken').then(value => {
+            console.log(value.toString());
+            return value.toString();
+        })
+    };
 
     render() {
         if (this.state.loading) {
             return (
                 <View style={styles.container}>
-                    <Text>Loading complaints</Text>
+                    <ProgressBarAndroid
+                        styleAttr="Horizontal"
+                        indeterminate={false}
+                        progress={0.5}
+                    />
                 </View>
             )
         }
 
         return (
-                <List>
-                    <FlatList
-                        data={this.state.data}
-                        renderItem={({item}) => (
-                            <Text>{item.title}</Text>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
-                </List>
+            <List containerStyle={{marginTop: 0, borderTopColor: '#fff'}}>
+                <FlatList
+                    data={this.state.data}
+                    renderItem={({item}) => (
+                        <Card
+                            containerStyle={{margin: 2}}
+                            title={item.title}>
+                            <Text style={{marginBottom: 10}}>
+                                {
+                                    item.description
+                                }
+                            </Text>
+                            <Button
+                                backgroundColor='#03A9F4'
+                                buttonStyle={
+                                    {
+                                        borderRadius: 8,
+                                        marginLeft: 0,
+                                        marginRight: 0,
+                                        marginBottom: 0
+                                    }
+                                }
+                                title='Visit'/>
+                        </Card>
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                />
+            </List>
         );
 
     }
@@ -71,8 +102,10 @@ export default class ComplaintsScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#afd3ff',
         alignItems: 'center',
         justifyContent: 'center',
-    },
+        alignSelf: 'stretch',
+        padding: 0
+    }
 });
