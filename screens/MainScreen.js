@@ -1,18 +1,20 @@
 import React, {Component} from 'react';
-import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 import ComplaintsScreen from "./ComplaintsScreen";
 import ProfileScreen from "./ProfileScreen";
 import AddComplaintScreen from "./AddComplaintScreen";
+import {Icon} from 'native-base';
+import {createMaterialBottomTabNavigator} from "react-navigation-material-bottom-tabs";
 
 export default class MainScreen extends Component {
+    static navigationOptions = {
+        title: 'WaterComplaints',
+        headerLeft: <Icon name='home' style={{padding: 10}}/>,
+        headerRight: <Icon name='home' style={{padding: 10}}/>
+    };
+
     constructor(props) {
         super(props)
     }
-
-    static navigationOptions = {
-        headerTitle: 'WaterComplaints',
-        headerLeft: null,
-    };
 
     render() {
         return (
@@ -33,5 +35,8 @@ const TabStackNavigator = createMaterialBottomTabNavigator(
         activeTintColor: '#000',
         inactiveTintColor: '#999',
         barStyle: {backgroundColor: '#fff'},
+        tabBarIcon: {
+            tintColor: '#999'
+        }
     }
 );

@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-import {Alert, AsyncStorage, FlatList, ProgressBarAndroid, StyleSheet, Text, View} from 'react-native';
-import {Button, Card, List} from "react-native-elements";
+import {Alert, AsyncStorage, FlatList, ProgressBarAndroid, StyleSheet, View} from 'react-native';
+import {List} from "react-native-elements";
+import {Icon} from "native-base";
+import CardComponent from "../components/CardComponent";
 
 export default class ComplaintsScreen extends Component {
     constructor(props) {
@@ -15,6 +17,10 @@ export default class ComplaintsScreen extends Component {
     componentDidMount() {
         this.fetchComplaints();
     }
+
+    static navigationOptions = {
+        tabBarIcon: <Icon name='home'/>,
+    };
 
     fetchComplaints = async () => {
         // Get access token to send in header request
@@ -44,14 +50,9 @@ export default class ComplaintsScreen extends Component {
         })
     };
 
-    getAccessToken = async () => {
-        await AsyncStorage.getItem('accessToken').then(value => {
-            console.log(value.toString());
-            return value.toString();
-        })
-    };
 
     render() {
+
         if (this.state.loading) {
             return (
                 <View style={styles.container}>
@@ -69,32 +70,14 @@ export default class ComplaintsScreen extends Component {
                 <FlatList
                     data={this.state.data}
                     renderItem={({item}) => (
-                        <Card
-                            containerStyle={{margin: 2}}
-                            title={item.title}>
-                            <Text style={{marginBottom: 10}}>
-                                {
-                                    item.description
-                                }
-                            </Text>
-                            <Button
-                                backgroundColor='#03A9F4'
-                                buttonStyle={
-                                    {
-                                        borderRadius: 8,
-                                        marginLeft: 0,
-                                        marginRight: 0,
-                                        marginBottom: 0
-                                    }
-                                }
-                                title='Visit'/>
-                        </Card>
+                        <CardComponent
+                            title={item.title}
+                        />
                     )}
                     keyExtractor={(item, index) => index.toString()}
                 />
             </List>
         );
-
     }
 }
 
@@ -107,5 +90,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'stretch',
         padding: 0
-    }
+    },
+    cardHeader: {}
 });

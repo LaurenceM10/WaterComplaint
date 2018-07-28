@@ -15,7 +15,6 @@ export default class LoginScreen extends Component {
         this.isAuthenticated()
     }
 
-
     static navigationOptions = {
         header: null
     };
@@ -39,6 +38,7 @@ export default class LoginScreen extends Component {
         }
     };
 
+
     // Do login with email and password
     doLogin = async () => {
         try {
@@ -61,6 +61,7 @@ export default class LoginScreen extends Component {
             Alert.alert("Login error. Try again.");
         }
     };
+
 
     // To store the Access Token with AsyncStorage and auth the user
     storeAccessToken = async (key) => {
