@@ -1,23 +1,11 @@
 import React, {Component} from 'react';
-import {Alert, AsyncStorage, FlatList, ProgressBarAndroid, StyleSheet, View} from 'react-native';
+import {Alert, AsyncStorage, FlatList, StyleSheet, Text, View} from 'react-native';
 import {List} from "react-native-elements";
 import {Icon} from "native-base";
 import CardComponent from "../components/CardComponent";
+import firebase from 'firebase';
 
 export default class ComplaintsScreen extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            loading: false,
-            data: []
-        };
-    }
-
-    componentDidMount() {
-        this.fetchComplaints();
-    }
-
     static navigationOptions = {
         tabBarIcon: <Icon name='home'/>,
     };
@@ -51,27 +39,57 @@ export default class ComplaintsScreen extends Component {
     };
 
 
-    render() {
+    loadData = () => {
+        this.setState({
+            loading: true
+        });
 
+        let dataFromFirebase = [];
+        let i = 0;
+        firebase.database().ref("notify")
+            .on('child_added', (snapshot) => {
+                dataFromFirebase.push(snapshot.val());
+                console.log(dataFromFirebase);
+                this.setState({
+                    data: dataFromFirebase,
+                    loading: false
+                });
+            });
+    };
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            loading: false,
+            data: []
+        };
+    }
+
+    componentWillMount() {
+        //this.fetchComplaints();
+        this.loadData()
+    }
+
+    render() {
         if (this.state.loading) {
             return (
                 <View style={styles.container}>
-                    <ProgressBarAndroid
-                        styleAttr="Horizontal"
-                        indeterminate={false}
-                        progress={0.5}
-                    />
+                    <Text>Loading</Text>
                 </View>
             )
         }
 
+
+        console.log(this.state.data);
         return (
             <List containerStyle={{marginTop: 0, borderTopColor: '#fff'}}>
                 <FlatList
                     data={this.state.data}
                     renderItem={({item}) => (
                         <CardComponent
-                            title={item.title}
+                            title={item.email}
+                            picture={item.foto}
                         />
                     )}
                     keyExtractor={(item, index) => index.toString()}

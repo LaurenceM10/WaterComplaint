@@ -2,23 +2,9 @@ import React, {Component} from 'react';
 import {Alert, AsyncStorage, Button, StyleSheet, TextInput, View} from 'react-native';
 
 export default class LoginScreen extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            loading: false,
-            email: '',
-            password: '',
-            accessToken: ''
-        };
-
-        this.isAuthenticated()
-    }
-
     static navigationOptions = {
         header: null
     };
-
     // If the user is authenticated, show main Screen
     isAuthenticated = () => {
         AsyncStorage.getItem('accessToken')
@@ -28,7 +14,6 @@ export default class LoginScreen extends Component {
                 }
             });
     };
-
     // To validate empty fields
     checkTextInput = () => {
         if (this.state.email === '' || this.state.password === '') {
@@ -37,8 +22,6 @@ export default class LoginScreen extends Component {
             this.doLogin();
         }
     };
-
-
     // Do login with email and password
     doLogin = async () => {
         try {
@@ -61,8 +44,6 @@ export default class LoginScreen extends Component {
             Alert.alert("Login error. Try again.");
         }
     };
-
-
     // To store the Access Token with AsyncStorage and auth the user
     storeAccessToken = async (key) => {
         try {
@@ -74,6 +55,19 @@ export default class LoginScreen extends Component {
             // Show error dialog
         }
     };
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            loading: false,
+            email: '',
+            password: '',
+            accessToken: ''
+        };
+
+        this.isAuthenticated()
+    }
 
     render() {
         return (

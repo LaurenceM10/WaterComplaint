@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Alert} from 'react-native';
 import {Body, Card, CardItem, Left, Thumbnail} from "native-base";
 
 
@@ -9,21 +9,18 @@ class CardComponent extends Component {
         super(props);
     }
 
-
     render() {
         return (
             <Card>
                 <CardItem header style={styles.headerCard}>
                     <Left>
-                        <Thumbnail small
-                                   source={{uri: 'https://i.kinja-img.com/gawker-media/image/upload/s--KicRiFQ5--/c_scale,f_auto,fl_progressive,q_80,w_800/dh58ggwna1am5pfbvv9t.jpg'}}/>
+                        <Thumbnail source={{uri: this.props.picture}}/>
                         <Body>
-                        <Text>{this.props.title}</Text>
+                        <Text onPress={() => {
+                            Alert.alert(this.props.title)
+                        }}>{this.props.title}</Text>
                         </Body>
                     </Left>
-                </CardItem>
-                <CardItem cardBody>
-                    <View style={styles.cardBody}/>
                 </CardItem>
             </Card>
         );

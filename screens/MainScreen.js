@@ -2,14 +2,12 @@ import React, {Component} from 'react';
 import ComplaintsScreen from "./ComplaintsScreen";
 import ProfileScreen from "./ProfileScreen";
 import AddComplaintScreen from "./AddComplaintScreen";
-import {Icon} from 'native-base';
 import {createMaterialBottomTabNavigator} from "react-navigation-material-bottom-tabs";
 
 export default class MainScreen extends Component {
     static navigationOptions = {
-        title: 'WaterComplaints',
-        headerLeft: <Icon name='home' style={{padding: 10}}/>,
-        headerRight: <Icon name='home' style={{padding: 10}}/>
+        headerTitle: 'WaterComplaints',
+        headerLeft: null
     };
 
     constructor(props) {
