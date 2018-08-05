@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import {StyleSheet, Text, View, Alert} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import {Body, Card, CardItem, Left, Thumbnail} from "native-base";
+import firebase from 'firebase';
 
 
 class CardComponent extends Component {
@@ -11,33 +11,42 @@ class CardComponent extends Component {
 
     render() {
         return (
-            <Card>
-                <CardItem header style={styles.headerCard}>
-                    <Left>
-                        <Thumbnail source={{uri: this.props.picture}}/>
-                        <Body>
-                        <Text onPress={() => {
-                            Alert.alert(this.props.title)
-                        }}>{this.props.title}</Text>
-                        </Body>
-                    </Left>
-                </CardItem>
-            </Card>
+            <TouchableOpacity
+                onPress={() => {
+                    firebase.database().ref("notify/" + this.props.uid).remove();
+                    Alert.alert("Deleted")
+                }}
+            >
+                <Card>
+                    <CardItem header>
+                        <Left>
+                            <Thumbnail
+                                source={{uri: this.props.picture}}
+                            />
+                            <Body>
+                            <Text
+                                style={styles.name}
+                            >{this.props.name}</Text>
+                            <Text style={styles.email}>{this.props.email}</Text>
+                            </Body>
+                        </Left>
+                    </CardItem>
+                </Card>
+            </TouchableOpacity >
         );
     }
 }
 
 
-CardComponent.propTypes = {
-    title: PropTypes.string.isRequired,
-};
-
 const styles = StyleSheet.create({
-    cardBody: {
-        flex: 1,
-        height: 200,
-        width: null,
-        backgroundColor: '#aaa',
+    name: {
+        color: '#000',
+        fontWeight: 'bold',
+        fontSize: 13
+    },
+    email: {
+        color: '#555',
+        fontSize: 12
     }
 });
 

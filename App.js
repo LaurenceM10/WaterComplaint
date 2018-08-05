@@ -1,9 +1,9 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {createStackNavigator} from 'react-navigation';
-import LoginScreen from "./screens/LoginScreen";
 import MainScreen from "./screens/MainScreen";
 import firebase from 'firebase';
+import FirebaseLoginScreen from "./screens/FirebaseLoginScreen";
 
 export default class App extends React.Component {
     componentWillMount() {
@@ -19,14 +19,14 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <AppStackNavigator />
+            <AppStackNavigator/>
         );
     }
 }
 
 
-
 const AppStackNavigator = createStackNavigator({
+    Login: FirebaseLoginScreen,
     Main: MainScreen
 });
 

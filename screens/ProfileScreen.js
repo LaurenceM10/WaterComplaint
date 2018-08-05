@@ -32,10 +32,8 @@ export default class ProfileScreen extends Component {
 }
 
 const TabStackNavigator = createMaterialTopTabNavigator({
-        WorkOrder: ComplaintsScreen,
+        WorkOrder: WorkOrderTab,
         Other: WorkOrderTab,
-        OtherTwo: WorkOrderTab,
-        OtherThree: WorkOrderTab
     },
     {
         tabBarOptions: {

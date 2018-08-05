@@ -1,62 +1,11 @@
 import React, {Component} from 'react';
-import {Alert, AsyncStorage, FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, StyleSheet} from 'react-native';
 import {List} from "react-native-elements";
 import {Icon} from "native-base";
 import CardComponent from "../components/CardComponent";
 import firebase from 'firebase';
 
 export default class ComplaintsScreen extends Component {
-    static navigationOptions = {
-        tabBarIcon: <Icon name='home'/>,
-    };
-
-    fetchComplaints = async () => {
-        // Get access token to send in header request
-        AsyncStorage.getItem('accessToken').then(value => {
-            try {
-                // Update loading state
-                this.setState({loading: true});
-
-                fetch("https://api-complaint.herokuapp.com/api/Complaints", {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': value.toString()
-                    }
-                })
-                    .then(res => res.json())
-                    .then(res => {
-                        this.setState({
-                            data: res,
-                            loading: false
-                        });
-                    });
-            } catch (error) {
-                Alert.alert("Complaints error. Try again.");
-            }
-        })
-    };
-
-
-    loadData = () => {
-        this.setState({
-            loading: true
-        });
-
-        let dataFromFirebase = [];
-        let i = 0;
-        firebase.database().ref("notify")
-            .on('child_added', (snapshot) => {
-                dataFromFirebase.push(snapshot.val());
-                console.log(dataFromFirebase);
-                this.setState({
-                    data: dataFromFirebase,
-                    loading: false
-                });
-            });
-    };
-
     constructor(props) {
         super(props);
 
@@ -66,29 +15,54 @@ export default class ComplaintsScreen extends Component {
         };
     }
 
-    componentWillMount() {
-        //this.fetchComplaints();
-        this.loadData()
+    // Navigations options - toolbar title and icons
+    static navigationOptions = {
+        tabBarIcon: <Icon name='home'/>,
+    };
+
+    // To get a list of user from Firebase Real Time database
+    getUsersFromFirebase = () => {
+        this.setState({
+            loading: true
+        });
+
+        // When a user is added
+        firebase.database().ref("notify").on('child_added', (snapshot) => {
+            let item = snapshot.val();
+
+            this.setState(prevState => ({
+                data: [...prevState.data, item]
+            }))
+
+        }).bind(this);
+
+        // When a user is removed
+        firebase.database().ref("notify")
+            .on('child_removed', (snapshot) => {
+                let newChange = this.state.data;
+                newChange.splice(this.state.data[0], 1);
+
+                this.setState(prevState => ({
+                    data: newChange
+                }))
+
+            }).bind(this);
+    };
+
+    componentDidMount() {
+        this.getUsersFromFirebase()
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <View style={styles.container}>
-                    <Text>Loading</Text>
-                </View>
-            )
-        }
-
-
-        console.log(this.state.data);
         return (
             <List containerStyle={{marginTop: 0, borderTopColor: '#fff'}}>
                 <FlatList
                     data={this.state.data}
                     renderItem={({item}) => (
                         <CardComponent
-                            title={item.email}
+                            uid={item.uid}
+                            name={item.nombre}
+                            email={item.email}
                             picture={item.foto}
                         />
                     )}
