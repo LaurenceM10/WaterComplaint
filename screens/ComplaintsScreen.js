@@ -5,6 +5,7 @@ import {Icon} from "native-base";
 import CardComponent from "../components/CardComponent";
 import firebase from 'firebase';
 
+
 export default class ComplaintsScreen extends Component {
     constructor(props) {
         super(props);
@@ -39,11 +40,10 @@ export default class ComplaintsScreen extends Component {
         // When a user is removed
         firebase.database().ref("notify")
             .on('child_removed', (snapshot) => {
-                let newChange = this.state.data;
-                newChange.splice(this.state.data[0], 1);
+                let item = snapshot.val();
 
                 this.setState(prevState => ({
-                    data: newChange
+                    data: [...prevState.data, item]
                 }))
 
             }).bind(this);
@@ -53,6 +53,13 @@ export default class ComplaintsScreen extends Component {
         this.getUsersFromFirebase()
     }
 
+    removeUser = (uid) => {
+        this.setState({
+            data: []
+        });
+        firebase.database().ref("notify/" + uid).remove();
+    };
+
     render() {
         return (
             <List containerStyle={{marginTop: 0, borderTopColor: '#fff'}}>
@@ -60,10 +67,10 @@ export default class ComplaintsScreen extends Component {
                     data={this.state.data}
                     renderItem={({item}) => (
                         <CardComponent
-                            uid={item.uid}
                             name={item.nombre}
                             email={item.email}
                             picture={item.foto}
+                            _onPress={this.removeUser(item.uid)}
                         />
                     )}
                     keyExtractor={(item, index) => index.toString()}

@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Alert, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import {Body, Card, CardItem, Left, Thumbnail} from "native-base";
 import firebase from 'firebase';
+import Swipeout from 'react-native-swipeout';
+
 
 
 class CardComponent extends Component {
@@ -10,13 +12,16 @@ class CardComponent extends Component {
     }
 
     render() {
+        // Buttons
+        const SwipeOut = [
+            {
+                text: 'Button',
+                onPress: () => { this.props._onPress}
+            }
+        ];
+
         return (
-            <TouchableOpacity
-                onPress={() => {
-                    firebase.database().ref("notify/" + this.props.uid).remove();
-                    Alert.alert("Deleted")
-                }}
-            >
+            <Swipeout right={SwipeOut}>
                 <Card>
                     <CardItem header>
                         <Left>
@@ -32,7 +37,7 @@ class CardComponent extends Component {
                         </Left>
                     </CardItem>
                 </Card>
-            </TouchableOpacity >
+            </Swipeout >
         );
     }
 }
