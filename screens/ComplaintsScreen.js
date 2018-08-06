@@ -22,7 +22,7 @@ export default class ComplaintsScreen extends Component {
     };
 
     // To get a list of user from Firebase Real Time database
-    getUsersFromFirebase = () => {
+    getUsersFromFirebase = async () => {
         this.setState({
             loading: true
         });
@@ -30,6 +30,7 @@ export default class ComplaintsScreen extends Component {
         // When a user is added
         firebase.database().ref("notify").on('child_added', (snapshot) => {
             let item = snapshot.val();
+            console.log(item);
 
             this.setState(prevState => ({
                 data: [...prevState.data, item]
@@ -38,12 +39,17 @@ export default class ComplaintsScreen extends Component {
         }).bind(this);
 
         // When a user is removed
-        firebase.database().ref("notify")
+        await firebase.database().ref("notify")
             .on('child_removed', (snapshot) => {
+                // el item acá es el elemento eliminado
                 let item = snapshot.val();
+                console.log(item);
 
                 this.setState(prevState => ({
-                    data: [...prevState.data, item]
+                    data: this.state.data.filter((_, i) => {
+                        console.log(_.uid);
+                        return _.uid !== item.uid
+                    })
                 }))
 
             }).bind(this);
@@ -54,9 +60,6 @@ export default class ComplaintsScreen extends Component {
     }
 
     removeUser = (uid) => {
-        this.setState({
-            data: []
-        });
         firebase.database().ref("notify/" + uid).remove();
     };
 
@@ -70,7 +73,12 @@ export default class ComplaintsScreen extends Component {
                             name={item.nombre}
                             email={item.email}
                             picture={item.foto}
-                            _onPress={this.removeUser(item.uid)}
+                            _onPress={() => {
+                                this.setState({
+                                    data: []
+                                });
+                                this.removeUser(item.uid)
+                            }}
                         />
                     )}
                     keyExtractor={(item, index) => index.toString()}

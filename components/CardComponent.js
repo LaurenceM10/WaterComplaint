@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
-import {Alert, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Body, Card, CardItem, Left, Thumbnail} from "native-base";
-import firebase from 'firebase';
-import Swipeout from 'react-native-swipeout';
-
 
 
 class CardComponent extends Component {
@@ -12,16 +9,10 @@ class CardComponent extends Component {
     }
 
     render() {
-        // Buttons
-        const SwipeOut = [
-            {
-                text: 'Button',
-                onPress: () => { this.props._onPress}
-            }
-        ];
-
         return (
-            <Swipeout right={SwipeOut}>
+            <TouchableOpacity
+                onPress={ this.props._onPress }
+            >
                 <Card>
                     <CardItem header>
                         <Left>
@@ -37,7 +28,7 @@ class CardComponent extends Component {
                         </Left>
                     </CardItem>
                 </Card>
-            </Swipeout >
+            </TouchableOpacity>
         );
     }
 }
